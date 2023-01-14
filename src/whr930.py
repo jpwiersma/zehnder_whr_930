@@ -4,9 +4,10 @@
 """
 Interface with a StorkAir WHR930
 
-Publish every 5 seconds the status on a MQTT topic
+Publish every 10 seconds the status on a MQTT topic
 Listen on MQTT topic for commands to set the ventilation level
 """
+MQTTBaseTopic='whr960/'
 
 import paho.mqtt.client as mqtt
 import time
@@ -371,18 +372,18 @@ def get_temp():
             ReturnAirTemp = int(data[10], 16) / 2.0 - 20
             ExhaustAirTemp = int(data[11], 16) / 2.0 - 20
 
-            publish_message(msg=ComfortTemp, mqtt_path="house/2/attic/wtw/comfort_temp")
+            publish_message(msg=ComfortTemp, mqtt_path=MQTTBaseTopic + 'tele/temperature/comfort')
             publish_message(
-                msg=OutsideAirTemp, mqtt_path="house/2/attic/wtw/outside_air_temp"
+                msg=OutsideAirTemp, mqtt_path=MQTTBaseTopic + 'tele/temperature/outside_air'
             )
             publish_message(
-                msg=SupplyAirTemp, mqtt_path="house/2/attic/wtw/supply_air_temp"
+                msg=SupplyAirTemp, mqtt_path=MQTTBaseTopic + 'tele/temperature/supply_air'
             )
             publish_message(
-                msg=ReturnAirTemp, mqtt_path="house/2/attic/wtw/return_air_temp"
+                msg=ReturnAirTemp, mqtt_path=MQTTBaseTopic + 'tele/temperature/return_air'
             )
             publish_message(
-                msg=ExhaustAirTemp, mqtt_path="house/2/attic/wtw/exhaust_air_temp"
+                msg=ExhaustAirTemp, mqtt_path=MQTTBaseTopic + 'tele/temperature/exhaust_air'
             )
 
             debug_msg(
@@ -418,16 +419,16 @@ def get_ventilation_status():
             IntakeFanActive = status_data["IntakeFanActive"][int(data[16], 16)]
 
             publish_message(
-                msg=ReturnAirLevel, mqtt_path="house/2/attic/wtw/return_air_level"
+                msg=ReturnAirLevel, mqtt_path=MQTTBaseTopic + 'tele/level/return_air'
             )
             publish_message(
-                msg=SupplyAirLevel, mqtt_path="house/2/attic/wtw/supply_air_level"
+                msg=SupplyAirLevel, mqtt_path=MQTTBaseTopic + 'tele/level/supply_air'
             )
             publish_message(
-                msg=FanLevel, mqtt_path="house/2/attic/wtw/ventilation_level"
+                msg=FanLevel, mqtt_path=MQTTBaseTopic + 'tele/level/fan'
             )
             publish_message(
-                msg=IntakeFanActive, mqtt_path="house/2/attic/wtw/intake_fan_active"
+                msg=IntakeFanActive, mqtt_path=MQTTBaseTopic + 'tele/fan/intake_active'
             )
             debug_msg(
                 "ReturnAirLevel: {}, SupplyAirLevel: {}, FanLevel: {}, IntakeFanActive: {}".format(
@@ -456,16 +457,16 @@ def get_fan_status():
             ExhaustFanRPM = int(1875000 / (int(data[11], 16) * 256 + int(data[12], 16)))
 
             publish_message(
-                msg=IntakeFanSpeed, mqtt_path="house/2/attic/wtw/intake_fan_speed"
+                msg=IntakeFanSpeed, mqtt_path=MQTTBaseTopic + 'tele/fan/intake_speed'
             )
             publish_message(
-                msg=ExhaustFanSpeed, mqtt_path="house/2/attic/wtw/exhaust_fan_speed"
+                msg=ExhaustFanSpeed, mqtt_path=MQTTBaseTopic + 'tele/fan/exhaust_speed'
             )
             publish_message(
-                msg=IntakeFanRPM, mqtt_path="house/2/attic/wtw/intake_fan_speed_rpm"
+                msg=IntakeFanRPM, mqtt_path=MQTTBaseTopic + 'tele/fan/intake_speed_rpm'
             )
             publish_message(
-                msg=ExhaustFanRPM, mqtt_path="house/2/attic/wtw/exhaust_fan_speed_rpm"
+                msg=ExhaustFanRPM, mqtt_path=MQTTBaseTopic + 'tele/fan/exhaust_speed_rpm'
             )
 
             debug_msg(
@@ -497,7 +498,7 @@ def get_filter_status():
                 FilterStatus = "Unknown"
 
             publish_message(
-                msg=FilterStatus, mqtt_path="house/2/attic/wtw/filter_status"
+                msg=FilterStatus, mqtt_path=MQTTBaseTopic + 'tele/filter_status'
             )
             debug_msg("FilterStatus: {0}".format(FilterStatus))
     except IndexError:
@@ -525,15 +526,15 @@ def get_valve_status():
             PreHeatingMotorCurrent = int(data[10], 16)
 
             publish_message(
-                msg=ByPass, mqtt_path="house/2/attic/wtw/valve_bypass_percentage"
+                msg=ByPass, mqtt_path=MQTTBaseTopic + 'tele/valve/bypass_percentage'
             )
             publish_message(
                 msg=ByPassMotorCurrent,
-                mqtt_path="house/2/attic/wtw/bypass_motor_current",
+                mqtt_path=MQTTBaseTopic + 'tele/bypass/motor_current'
             )
             publish_message(
                 msg=PreHeatingMotorCurrent,
-                mqtt_path="house/2/attic/wtw/preheating_motor_current",
+                mqtt_path=MQTTBaseTopic + 'tele/preheating/motor_current',
             )
 
             debug_msg(
@@ -567,13 +568,13 @@ def get_bypass_control():
                 SummerMode = False
 
             publish_message(
-                msg=ByPassFactor, mqtt_path="house/2/attic/wtw/bypass_factor"
+                msg=ByPassFactor, mqtt_path=MQTTBaseTopic + 'tele/bypass/factor'
             )
-            publish_message(msg=ByPassStep, mqtt_path="house/2/attic/wtw/bypass_step")
+            publish_message(msg=ByPassStep, mqtt_path=MQTTBaseTopic + 'tele/bypass/step')
             publish_message(
-                msg=ByPassCorrection, mqtt_path="house/2/attic/wtw/bypass_correction"
+                msg=ByPassCorrection, mqtt_path=MQTTBaseTopic + 'tele/bypass/correction'
             )
-            publish_message(msg=SummerMode, mqtt_path="house/2/attic/wtw/summer_mode")
+            publish_message(msg=SummerMode, mqtt_path=MQTTBaseTopic + 'tele/bypass/summermode')
 
             debug_msg(
                 "ByPassFactor: {}, ByPassStep: {}, ByPassCorrection: {}, SummerMode: {}".format(
@@ -622,22 +623,22 @@ def get_preheating_status():
 
             publish_message(
                 msg=PreHeatingValveStatus,
-                mqtt_path="house/2/attic/wtw/preheating_valve",
+                mqtt_path=MQTTBaseTopic + 'tele/preheating/valve'
             )
             publish_message(
                 msg=FrostProtectionActive,
-                mqtt_path="house/2/attic/wtw/frost_protection_active",
+                mqtt_path=MQTTBaseTopic + 'tele/preheating/frost_protection'
             )
             publish_message(
-                msg=PreHeatingActive, mqtt_path="house/2/attic/wtw/preheating_state"
+                msg=PreHeatingActive, mqtt_path=MQTTBaseTopic + 'tele/preheating/state'
             )
             publish_message(
                 msg=FrostProtectionMinutes,
-                mqtt_path="house/2/attic/wtw/frost_protection_minutes",
+                mqtt_path=MQTTBaseTopic + 'tele/preheating/frost_protection_minutes'
             )
             publish_message(
                 msg=FrostProtectionLevel,
-                mqtt_path="house/2/attic/wtw/frost_protection_level",
+                mqtt_path=MQTTBaseTopic + 'tele/preheating/frost_protection_level'
             )
 
             debug_msg(
@@ -678,21 +679,21 @@ def get_operating_hours():
             BypassOpenHours = int(data[14], 16) + int(data[15], 16)
             FilterHours = int(data[22], 16) + int(data[23], 16)
 
-            publish_message(msg=Level0Hours, mqtt_path="house/2/attic/wtw/level0_hours")
-            publish_message(msg=Level1Hours, mqtt_path="house/2/attic/wtw/level1_hours")
-            publish_message(msg=Level2Hours, mqtt_path="house/2/attic/wtw/level2_hours")
-            publish_message(msg=Level3Hours, mqtt_path="house/2/attic/wtw/level3_hours")
+            publish_message(msg=Level0Hours, mqtt_path=MQTTBaseTopic + 'tele/hours/level0')
+            publish_message(msg=Level1Hours, mqtt_path=MQTTBaseTopic + 'tele/hours/level1')
+            publish_message(msg=Level2Hours, mqtt_path=MQTTBaseTopic + 'tele/hours/level2')
+            publish_message(msg=Level3Hours, mqtt_path=MQTTBaseTopic + 'tele/hours/level3')
             publish_message(
                 msg=FrostProtectionHours,
-                mqtt_path="house/2/attic/wtw/frost_protection_hours",
+                mqtt_path="tele/hours/frost_protection",
             )
             publish_message(
-                msg=PreHeatingHours, mqtt_path="house/2/attic/wtw/preheating_hours"
+                msg=PreHeatingHours, mqtt_path=MQTTBaseTopic + 'tele/hours/preheating'
             )
             publish_message(
-                msg=BypassOpenHours, mqtt_path="house/2/attic/wtw/bypass_open_hours"
+                msg=BypassOpenHours, mqtt_path=MQTTBaseTopic + 'tele/hours/bypass'
             )
-            publish_message(msg=FilterHours, mqtt_path="house/2/attic/wtw/filter_hours")
+            publish_message(msg=FilterHours, mqtt_path=MQTTBaseTopic + 'tele/hours/filter')
 
             debug_msg(
                 "Level0Hours: {}, Level1Hours: {}, Level2Hours: {}, Level3Hours: {}, FrostProtectionHours: {}, PreHeatingHours: {}, BypassOpenHours: {}, FilterHours: {}".format(
@@ -791,13 +792,13 @@ def get_status():
             )
 
             for key, value in status_8bit(ActiveStatus1).items():
-                topic = "house/2/attic/wtw/{}_active".format(active1_status_data[key])
+                topic = MQTTBaseTopic + 'tele/status/{}_active'.format(active1_status_data[key])
                 debug_msg("{}: {}".format(topic, value))
                 publish_message(msg=value, mqtt_path=topic)
 
             for key, value in status_8bit(ActiveStatus2).items():
                 try:
-                    topic = "house/2/attic/wtw/{}_active".format(
+                    topic = MQTTBaseTopic + 'tele/status/{}_active'.format(
                         active2_status_data[key]
                     )
                     debug_msg("{}: {}".format(topic, value))
@@ -806,25 +807,25 @@ def get_status():
                     pass
 
             for key, value in status_8bit(ActiveStatus3).items():
-                topic = "house/2/attic/wtw/{}_active".format(active3_status_data[key])
+                topic = MQTTBaseTopic + 'tele/status/{}_active'.format(active3_status_data[key])
                 debug_msg("{}: {}".format(topic, value))
                 publish_message(msg=value, mqtt_path=topic)
 
             publish_message(
-                msg=PreHeatingPresent, mqtt_path="house/2/attic/wtw/preheating_present"
+                msg=PreHeatingPresent, mqtt_path=MQTTBaseTopic + 'tele/status/preheating_present'
             )
             publish_message(
-                msg=ByPassPresent, mqtt_path="house/2/attic/wtw/bypass_present"
+                msg=ByPassPresent, mqtt_path=MQTTBaseTopic + 'tele/status/bypass_present'
             )
-            publish_message(msg=Type, mqtt_path="house/2/attic/wtw/type")
-            publish_message(msg=Size, mqtt_path="house/2/attic/wtw/size")
+            publish_message(msg=Type, mqtt_path=MQTTBaseTopic + 'tele/status/type')
+            publish_message(msg=Size, mqtt_path=MQTTBaseTopic + 'tele/status/size')
             publish_message(
-                msg=OptionsPresent, mqtt_path="house/2/attic/wtw/options_present"
+                msg=OptionsPresent, mqtt_path=MQTTBaseTopic + 'tele/status/options_present'
             )
             publish_message(
-                msg=EnthalpyPresent, mqtt_path="house/2/attic/wtw/enthalpy_present"
+                msg=EnthalpyPresent, mqtt_path=MQTTBaseTopic + 'tele/status/enthalpy_present'
             )
-            publish_message(msg=EWTPresent, mqtt_path="house/2/attic/wtw/ewt_present")
+            publish_message(msg=EWTPresent, mqtt_path=MQTTBaseTopic + 'tele/status/ewt_present')
     except IndexError:
         warning_msg("get_status ignoring incomplete message")
 
@@ -843,11 +844,11 @@ def handle_commands():
 
     while len(pending_commands) > 0:
         message = pending_commands.pop(0)
-        if message.topic == "house/2/attic/wtw/set_ventilation_level":
+        if message.topic == MQTTBaseTopic + "cmd/set_ventilation_level":
             fan_level = int(float(message.payload))
             set_ventilation_level(fan_level)
             get_ventilation_status()
-        elif message.topic == "house/2/attic/wtw/set_comfort_temperature":
+        elif message.topic == MQTTBaseTopic + "cmd/set_comfort_temperature":
             temperature = float(message.payload)
             set_comfort_temperature(temperature)
             get_temp()
@@ -876,8 +877,8 @@ def topic_subscribe():
     try:
         mqttc.subscribe(
             [
-                ("house/2/attic/wtw/set_ventilation_level", 0),
-                ("house/2/attic/wtw/set_comfort_temperature", 0),
+                (MQTTBaseTopic + "cmd/set_ventilation_level", 0),
+                (MQTTBaseTopic + "cmd/set_comfort_temperature", 0),
             ]
         )
         info_msg("Successfull subscribed to the MQTT topics")
@@ -919,6 +920,7 @@ def main():
     """Connect to the MQTT broker"""
     mqttc = mqtt.Client("whr930")
     mqttc.username_pw_set(username=config["mqtt_username"], password=config["mqtt_password"])
+    mqttc.tls_set()
 
     """Define the mqtt callbacks"""
     mqttc.on_connect = on_connect
@@ -926,7 +928,7 @@ def main():
     mqttc.on_disconnect = on_disconnect
 
     """Connect to the MQTT server"""
-    mqttc.connect(config["mqtt_server"], port=1883, keepalive=45)
+    mqttc.connect(config["mqtt_server"], port=config["mqtt_port"], keepalive=45)
 
     """Open the serial port"""
     ser = serial.Serial(
@@ -960,7 +962,7 @@ def main():
                 else:
                     handle_commands()
 
-            time.sleep(5)
+            time.sleep(10)
             pass
         except KeyboardInterrupt:
             mqttc.loop_stop()
