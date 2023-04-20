@@ -721,7 +721,6 @@ def get_status():
         "Type": {2: "Right", 1: "Left"},
         "Size": {1: "Large", 2: "Small"},
         "OptionsPresent": {0: False, 1: True},
-        "EnthalpyPresent": {0: False, 1: True, 2: "PresentWithoutSensor"},
         "EWTPresent": {0: False, 1: "Managed", 2: "Unmanaged"},
     }
 
@@ -766,7 +765,6 @@ def get_status():
                 ActiveStatus1 = int(data[13])  # (0x01 = P10 ... 0x80 = P17)
                 ActiveStatus2 = int(data[14])  # (0x01 = P18 / 0x02 = P19)
                 ActiveStatus3 = int(data[15])  # (0x01 = P90 ... 0x80 = P97)
-                EnthalpyPresent = status_data["EnthalpyPresent"][int(data[16])]
                 EWTPresent = status_data["EWTPresent"][int(data[17])]
             except ValueError as _value_err:
                 warning_msg(
@@ -780,13 +778,12 @@ def get_status():
                 )
 
             debug_msg(
-                "PreHeatingPresent: {}, ByPassPresent: {}, Type: {}, Size: {}, OptionsPresent: {}, EnthalpyPresent: {}, EWTPresent: {}".format(
+                "PreHeatingPresent: {}, ByPassPresent: {}, Type: {}, Size: {}, OptionsPresent: {}, EWTPresent: {}".format(
                     PreHeatingPresent,
                     ByPassPresent,
                     Type,
                     Size,
                     OptionsPresent,
-                    EnthalpyPresent,
                     EWTPresent,
                 )
             )
@@ -821,9 +818,6 @@ def get_status():
             publish_message(msg=Size, mqtt_path=MQTTBaseTopic + 'tele/status/size')
             publish_message(
                 msg=OptionsPresent, mqtt_path=MQTTBaseTopic + 'tele/status/options_present'
-            )
-            publish_message(
-                msg=EnthalpyPresent, mqtt_path=MQTTBaseTopic + 'tele/status/enthalpy_present'
             )
             publish_message(msg=EWTPresent, mqtt_path=MQTTBaseTopic + 'tele/status/ewt_present')
     except IndexError:
